@@ -7,8 +7,17 @@
 //
 
 #import "AppDelegate.h"
+#import <sqlite3.h>
 
 @interface AppDelegate ()
+{
+    sqlite3  *db;
+    NSString *susutable;
+    NSString *name;
+    NSString *age;
+    NSString *address;
+    char *ERROR;
+}
 
 @end
 
@@ -16,8 +25,94 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    
+    // get the path
+    NSArray * path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDir = [path objectAtIndex:0];
+    NSString * basePa = [documentDir stringByAppendingPathComponent:@"firstDataBase.sqlite"];
+    // create or open new dataBase |db|
+    if (sqlite3_open([basePa UTF8String],&db) != SQLITE_OK) {
+        sqlite3_close(db);
+        NSLog(@"after create sql fail");
+    }
+    NSLog(@"%@",basePa);
+    [self printQuary:@"open the dataBase"];
+    
+    // create new table in sql |SUSUTABLE|
+    NSString *creatTable = @"CREATE TABLE IF NOT EXISTS SUSUTABLE (name TEXT PRIMARY KEY AUTOINCREMENT,age INTEGER,address TEXT)";
+    if (sqlite3_exec(db,[creatTable UTF8String],NULL,NULL,&ERROR) != SQLITE_OK) {
+        sqlite3_close(db);
+        NSAssert(0, @"create table fail");
+    }
+    [self printQuary:@"after create the table"];
+    
+    // delete the old date
+    sqlite3_stmt *deleteStmt;
+    NSString * deleteData = [NSString stringWithFormat:@"DELETE FROM SUSUTABLE WHERE age=?"];
+    const char *deleteSql = [deleteData UTF8String];
+    if (sqlite3_prepare_v2(db, deleteSql, -1, &deleteStmt, nil) == SQLITE_OK) {
+        sqlite3_bind_int(deleteStmt, 1, 22);
+    }
+    if (sqlite3_step(deleteStmt) != SQLITE_OK) {
+        NSLog(@"delete fail");
+    }
+    [self printQuary:@"after delete the data : age == 22"];
+    
+
+    //1. inset data into |SUSUTABLE| , just inset the date by insert
+    NSString * sq1 = [NSString stringWithFormat:@"INSERT INTO susutable (name, age, address) VALUES ('%@', '%@', '%@')", @"张三",@"22",@"西湖区"];
+    NSString * sq2 = [NSString stringWithFormat:@"INSERT INTO susutable (name, age, address) VALUES ('%@', '%@', '%@')", @"里斯",@"22",@"西湖区"];
+    if (sqlite3_exec(db,[sq1 UTF8String],NULL,NULL,&ERROR) != SQLITE_OK) {
+        sqlite3_close(db);
+    }
+    if (sqlite3_exec(db,[sq2 UTF8String],NULL,NULL,&ERROR) != SQLITE_OK) {
+        sqlite3_close(db);
+    }
+    [self printQuary:@"after insert data"];
+    
+    //2. insert data into |SUSUTABLE| , prepare the sql and bind the param to the stmt
+    char *update = "INSERT OR REPLACE INTO SUSUTABLE(name,age,address)""VALUES(?,?,?);";
+    char *errorMsg;
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db,update,-1,&stmt,nil) == SQLITE_OK) {
+        sqlite3_bind_text(stmt,1,[@"newone" UTF8String],-1,NULL);
+        sqlite3_bind_int(stmt,2,11);
+        sqlite3_bind_text(stmt,3,[@"文二西路" UTF8String],-1,NULL);
+    }
+    
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        NSLog(@"fail to update the data");
+        NSAssert(0, @"error updating: %s",errorMsg);
+    }
+    [self printQuary:@"update the data newone"];
+    
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
     return YES;
+}
+
+- (void)printQuary:(NSString *)step {
+    // quary the db
+    sqlite3_stmt *stmt;
+    NSString * quary = @"SELECT * FROM SUSUTABLE";
+    NSLog(@"------------%@\n",step);
+    if (sqlite3_prepare_v2(db, [quary UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            
+            char * name = (char *)sqlite3_column_text(stmt,1);
+            NSString * nameStr = [[NSString alloc] initWithUTF8String:name];
+            NSLog(@"%@",nameStr);
+            
+            int age = sqlite3_column_int(stmt,2);
+            NSLog(@"%d",age);
+            
+            char * address = (char *)sqlite3_column_text(stmt,3);
+            NSString * addressName = [[NSString alloc ] initWithUTF8String:address];
+            NSLog(@"%@",addressName);
+        }
+    }
+
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

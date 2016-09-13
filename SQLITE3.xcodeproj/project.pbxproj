@@ -15,6 +15,7 @@
 		84C988BC1D40A2AF00A33A3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84C988BA1D40A2AF00A33A3C /* LaunchScreen.storyboard */; };
 		84C988C71D40A2AF00A33A3C /* SQLITE3Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C988C61D40A2AF00A33A3C /* SQLITE3Tests.m */; };
 		84C988D21D40A2AF00A33A3C /* SQLITE3UITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C988D11D40A2AF00A33A3C /* SQLITE3UITests.m */; };
+		84C988E01D40A33000A33A3C /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 84C988DF1D40A33000A33A3C /* libsqlite3.0.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		84C988CD1D40A2AF00A33A3C /* SQLITE3UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SQLITE3UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C988D11D40A2AF00A33A3C /* SQLITE3UITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQLITE3UITests.m; sourceTree = "<group>"; };
 		84C988D31D40A2AF00A33A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84C988DF1D40A33000A33A3C /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84C988E01D40A33000A33A3C /* libsqlite3.0.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +84,7 @@
 		84C988A01D40A2AD00A33A3C = {
 			isa = PBXGroup;
 			children = (
+				84C988DF1D40A33000A33A3C /* libsqlite3.0.tbd */,
 				84C988AB1D40A2AE00A33A3C /* SQLITE3 */,
 				84C988C51D40A2AF00A33A3C /* SQLITE3Tests */,
 				84C988D01D40A2AF00A33A3C /* SQLITE3UITests */,
